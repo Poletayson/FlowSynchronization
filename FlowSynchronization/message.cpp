@@ -5,6 +5,12 @@ Message::Message(QObject *parent) : QObject(parent)
 
 }
 
+Message::Message(const int t, const QVariant &value, QObject *parent) : QObject(parent)
+{
+    type = t;
+    message = value;
+}
+
 QVariant Message::getMessage() const
 {
     return message;

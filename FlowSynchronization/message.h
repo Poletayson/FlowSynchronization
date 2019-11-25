@@ -10,7 +10,8 @@ class Message : public QObject
     Q_OBJECT
 public:
     explicit Message(QObject *parent = nullptr);
-    enum types {MAKE_ORDER = 1};
+    Message (const int t, const QVariant &value, QObject *parent = nullptr);
+    enum types {MAKE_ORDER = 1, ORDER_TRANSFER, MATERIALS_REQUEST, MATERIALS_ARE, MATERIALS_ARE_NOT, REJECTION, ORDER_READY, MONEY_TRANSFER};
 
     QVariant getMessage() const;
     void setMessage(const QVariant &value);
