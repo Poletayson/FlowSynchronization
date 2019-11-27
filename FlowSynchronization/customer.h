@@ -13,9 +13,10 @@ class Customer : public QObject
 {
     Q_OBJECT
 public:
-    explicit Customer(QObject *parent = nullptr);
-    void run ();
+    explicit Customer(QObject *parent = nullptr);   
     void toFile (QString str);
+public slots:
+    void run ();
 
 private:
     QCanal *customerCanal;
@@ -26,6 +27,7 @@ private:
 
 
 signals:
+    void resultReady(const QString & result);
 
 public slots:
 };
