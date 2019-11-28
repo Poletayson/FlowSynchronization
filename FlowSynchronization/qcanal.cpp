@@ -7,9 +7,11 @@ QCanal::QCanal():QSharedMemory()
 
 QCanal::QCanal(QString key):QSharedMemory(key)
 {
-    isEmpty = true;
-    if (!create(2048))  //создаем, либо подключаемся
-        attach();
+    isEmpty = true; //и
+    create(2048);
+    attach();
+//    if (!create(2048))  //создаем, либо подключаемся
+//        attach();
 }
 
 bool QCanal::put(int type, QVariant value)
@@ -21,7 +23,6 @@ bool QCanal::put(int type, QVariant value)
         void *dataPointer = data();
         ((int*)dataPointer)[0] = type;
         memcpy (dataPointer, &value, 200);
-        unlock();
         return true;
     }
     else {
@@ -29,19 +30,23 @@ bool QCanal::put(int type, QVariant value)
     }
 }
 
-Message* QCanal::get()
+Message QCanal::get()
 {
-    return message;
+    void *dataPointer = data();
+    QString str = ((QString*)dataPointer)[1];
+    return Message (((int*)dataPointer)[0], str);
 }
 
 void QCanal::lock()
 {
     isEmpty = false;
+    QSharedMemory::lock();
 }
 
 void QCanal::unlock()
 {
     isEmpty = true;
+    QSharedMemory::unlock();
 }
 
 bool QCanal::getIsEmpty() const

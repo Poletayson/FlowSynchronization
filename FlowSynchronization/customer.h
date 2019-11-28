@@ -20,8 +20,8 @@ public slots:
     void run ();
 
 private:
-    QCanal *customerCanal;
-    QCanal *dispatcherCanalOrder;
+    QCanal *customerCanal;      //канал для приема заказчиком
+    QCanal *dispatcherCanalOrder;   //канал для приема диспетчером
     QCanal *courierCanal;
     QCanal *generalCanal;
 

@@ -11,15 +11,29 @@ Dispetcher::Dispetcher(QObject *parent) : QObject(parent)
 
 void Dispetcher::run()
 {
-     //ORDER_COUNT;
-    for (int counter = 0; counter < ORDER_COUNT; counter++) {
-        while (!dispatcherCanalOrder->getIsEmpty());    //ждем пока не станет можно
-        dispatcherCanalOrder->put(Message::MAKE_ORDER, QVariant("Стул"));   //делаем заказ
-        toFile("заказал стул");
-        customerCanal->unlock();
-        while (customerCanal->getIsEmpty());    //пока не станет можно
+    toFile(dispatcherCanalOrder->key() + " " + QString(dispatcherCanalOrder->isAttached()));
+
+    while (true) {
+        while (dispatcherCanalOrder->QSharedMemory::lock())toFile("ждет заказ");   //ждем пока не поступит заказ
+        if (dispatcherCanalOrder->get().getType() == Message::MAKE_ORDER){
+            toFile("Получил заказ");
+            dispatcherCanalOrder->unlock();    //Все, заказ выполнен
+        }
+        else{
+            toFile("Что-то не то: ");
+        }
 
     }
+
+
+//    for (int counter = 0; counter < ORDER_COUNT; counter++) {
+//        while (!dispatcherCanalOrder->getIsEmpty());    //ждем пока не станет можно
+//        dispatcherCanalOrder->put(Message::MAKE_ORDER, QVariant("Стул"));   //делаем заказ
+//        toFile("заказал стул");
+//        customerCanal->unlock();
+//        while (customerCanal->getIsEmpty());    //пока не станет можно
+
+//    }
 }
 
 void Dispetcher::toFile(QString str)

@@ -22,6 +22,8 @@ int main(int argc, char *argv[])
     QObject::connect(dispetcher, SIGNAL(finished()), dispetcherThread, SLOT(terminate()));
     dispetcher->moveToThread(dispetcherThread);
 
+    customerThread->start();
+    dispetcherThread->start();
 
 
     MainWindow w;

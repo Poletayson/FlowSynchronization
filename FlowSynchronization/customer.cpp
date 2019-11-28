@@ -10,13 +10,14 @@ Customer::Customer(QObject *parent) : QObject(parent)
 
 void Customer::run()
 {
+//    toFile(dispatcherCanalOrder->key() + " " + QString(dispatcherCanalOrder->isAttached()));
      //ORDER_COUNT;
     for (int counter = 0; counter < ORDER_COUNT; counter++) {
-        while (!dispatcherCanalOrder->getIsEmpty());    //ждем пока не станет можно
+        while (!dispatcherCanalOrder->QSharedMemory::lock())toFile("ждет когда можно сделать заказ");    //ждем пока не станет можно
         dispatcherCanalOrder->put(Message::MAKE_ORDER, QVariant("Стул"));   //делаем заказ
         toFile("заказал стул");
-        customerCanal->unlock();
-        while (customerCanal->getIsEmpty());    //пока не станет можно
+        //customerCanal->lock();
+        while (! customerCanal->getIsEmpty())toFile("ждет ответа");    //пока не станет можно
 
     }
 }
