@@ -11,14 +11,14 @@ public:
     QCanal();
     QCanal(QString key);
     bool put (int type, QVariant value);    //поместить сообщение в канал
-    Message get ();       //получить сообщение из канала
+    Message* get ();       //получить сообщение из канала
     void lock ();
     void unlock ();
     bool getIsEmpty() const;
 
 private:
     bool isEmpty;
-    Message message;   //сообщение, содержащееся в канале
+    Message* message;   //сообщение, содержащееся в канале
 };
 
 #endif // QCANAL_H

@@ -20,7 +20,7 @@ bool QCanal::put(int type, QVariant value)
         isEmpty = false;
         void *dataPointer = data();
         ((int*)dataPointer)[0] = type;
-        memcpy(type, dataPointer, 0);
+        memcpy (dataPointer, &value, 200);
         unlock();
         return true;
     }
@@ -29,7 +29,7 @@ bool QCanal::put(int type, QVariant value)
     }
 }
 
-Message QCanal::get()
+Message* QCanal::get()
 {
     return message;
 }

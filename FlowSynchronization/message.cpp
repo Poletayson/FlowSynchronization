@@ -11,6 +11,12 @@ Message::Message(const int t, const QVariant &value, QObject *parent) : QObject(
     message = value;
 }
 
+Message::Message(const Message &other)
+{
+    this->type = other.getType();
+    this->message = other.getMessage();
+}
+
 QVariant Message::getMessage() const
 {
     return message;

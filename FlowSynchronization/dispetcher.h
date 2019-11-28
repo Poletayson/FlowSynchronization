@@ -1,5 +1,5 @@
-#ifndef CUSTOMER_H
-#define CUSTOMER_H
+#ifndef DISPETCHER_H
+#define DISPETCHER_H
 
 #include <QObject>
 #include <QSharedMemory>
@@ -9,11 +9,11 @@
 #include <message.h>
 #include <QTextStream>
 
-class Customer : public QObject
+class Dispetcher : public QObject
 {
     Q_OBJECT
 public:
-    explicit Customer(QObject *parent = nullptr);   
+    explicit Dispetcher(QObject *parent = nullptr);
     void toFile (QString str);
 
 public slots:
@@ -22,10 +22,9 @@ public slots:
 private:
     QCanal *customerCanal;
     QCanal *dispatcherCanalOrder;
+    QCanal *dispatcherCanalToMaster;
     QCanal *courierCanal;
     QCanal *generalCanal;
-
-    int ORDER_COUNT = 100;
 
 
 signals:
@@ -34,4 +33,4 @@ signals:
 
 };
 
-#endif // CUSTOMER_H
+#endif // DISPETCHER_H
