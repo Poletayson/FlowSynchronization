@@ -3,53 +3,61 @@
 QCanal::QCanal():QSharedMemory()
 {
     isEmpty = true;
+    put(Message::EMPTY, QVariant (""));
 }
 
 QCanal::QCanal(QString key):QSharedMemory(key)
 {
     isEmpty = true; //и
-    create(2048);
-    attach();
-//    if (!create(2048))  //создаем, либо подключаемся
-//        attach();
+    if (create(2048))
+       put(Message::EMPTY, QVariant (""));
+    else
+        attach();
 }
 
 bool QCanal::put(int type, QVariant value)
 {
-    if (isEmpty){
-        lock();
-        //message = Message (type, value);
-        isEmpty = false;
-        void *dataPointer = data();
-        ((int*)dataPointer)[0] = type;
-        memcpy (dataPointer, &value, 200);
-        return true;
-    }
-    else {
-        return false;
-    }
+    lock();
+
+    isEmpty = false;
+    int *to = (int*)data();
+    memcpy(to, &type, sizeof (int));
+//        dataPointer[0] = type;
+//        memcpy (dataPointer, &value, 200);
+    unlock();
+
+    return true;
+//    }
+//    else {
+//        return false;
+//    }
 }
 
 Message QCanal::get()
 {
     void *dataPointer = data();
-    QString str = ((QString*)dataPointer)[1];
-    return Message (((int*)dataPointer)[0], str);
+    //QString str = ((QString*)dataPointer)[1];
+    return Message (((int*)dataPointer)[0], "");
 }
 
-void QCanal::lock()
+void QCanal::lockCanal()
 {
-    isEmpty = false;
-    QSharedMemory::lock();
+
 }
 
-void QCanal::unlock()
+void QCanal::unlockCanal()
 {
-    isEmpty = true;
-    QSharedMemory::unlock();
+    put(Message::EMPTY, QVariant (""));
 }
 
-bool QCanal::getIsEmpty() const
+bool QCanal::getIsEmpty()
 {
-    return isEmpty;
+    attach();
+    lock();
+    void *dataPointer = data();
+    int val = ((int*)dataPointer)[0];
+    unlock();
+
+    return val == Message::EMPTY ? true : false;
+
 }

@@ -12,7 +12,7 @@ public:
     explicit Message(QObject *parent = nullptr);
     Message (const int t, const QVariant &value, QObject *parent = nullptr);
     Message (const Message &other);
-    enum types {MAKE_ORDER = 1, ORDER_TRANSFER, MATERIALS_REQUEST, MATERIALS_ARE, MATERIALS_ARE_NOT, REJECTION, ORDER_READY, MONEY_TRANSFER, CANCEL};
+    enum types {EMPTY = 1, MAKE_ORDER, ORDER_TRANSFER, MATERIALS_REQUEST, MATERIALS_ARE, MATERIALS_ARE_NOT, REJECTION, ORDER_READY, MONEY_TRANSFER, CANCEL};
 
     QVariant getMessage() const;
     void setMessage(const QVariant &value);

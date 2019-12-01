@@ -1,5 +1,5 @@
-#ifndef CUSTOMER_H
-#define CUSTOMER_H
+#ifndef STORAGE_H
+#define STORAGE_H
 
 #include <QObject>
 #include <QSharedMemory>
@@ -10,11 +10,11 @@
 #include <QTextStream>
 #include <QThread>
 
-class Customer : public QObject
+class Storage : public QObject
 {
     Q_OBJECT
 public:
-    explicit Customer(QObject *parent = nullptr);   
+    explicit Storage(QObject *parent = nullptr);
     void toFile (QString str);
 
 public slots:
@@ -25,14 +25,14 @@ private:
     QCanal *dispatcherCanalOrder;   //канал для приема диспетчером
     QCanal *courierCanal;
     QCanal *generalCanal;
+    QCanal *storageCanal;
 
-    int ORDER_COUNT = 3;
+    int count = 100;
+    const int NEED = 10;
 
 
 signals:
     void finished();
-
-
 };
 
-#endif // CUSTOMER_H
+#endif // STORAGE_H

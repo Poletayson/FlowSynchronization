@@ -16,19 +16,25 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    courier.cpp \
     customer.cpp \
     dispetcher.cpp \
     main.cpp \
     mainwindow.cpp \
+    master.cpp \
     message.cpp \
-    qcanal.cpp
+    qcanal.cpp \
+    storage.cpp
 
 HEADERS += \
+    courier.h \
     customer.h \
     dispetcher.h \
     mainwindow.h \
+    master.h \
     message.h \
-    qcanal.h
+    qcanal.h \
+    storage.h
 
 FORMS += \
     mainwindow.ui

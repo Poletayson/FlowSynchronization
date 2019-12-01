@@ -1,5 +1,5 @@
-#ifndef DISPETCHER_H
-#define DISPETCHER_H
+#ifndef MASTER_H
+#define MASTER_H
 
 #include <QObject>
 #include <QSharedMemory>
@@ -10,11 +10,11 @@
 #include <QTextStream>
 #include <QThread>
 
-class Dispetcher : public QObject
+class Master : public QObject
 {
     Q_OBJECT
 public:
-    explicit Dispetcher(QObject *parent = nullptr);
+    explicit Master(QObject *parent = nullptr);
     void toFile (QString str);
 
 public slots:
@@ -27,11 +27,10 @@ private:
     QCanal *courierCanal;
     QCanal *masterCanal;
     QCanal *generalCanal;
-
+    QCanal *storageCanal;
 
 signals:
     void finished();
-
 };
 
-#endif // DISPETCHER_H
+#endif // MASTER_H

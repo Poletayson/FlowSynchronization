@@ -12,9 +12,9 @@ public:
     QCanal(QString key);
     bool put (int type, QVariant value);    //поместить сообщение в канал
     Message get ();       //получить сообщение из канала
-    void lock ();
-    void unlock ();
-    bool getIsEmpty() const;
+    void lockCanal ();
+    void unlockCanal ();
+    bool getIsEmpty();
 
 private:
     bool isEmpty;

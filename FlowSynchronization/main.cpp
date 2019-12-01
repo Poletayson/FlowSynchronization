@@ -4,6 +4,7 @@
 #include <QThread>
 #include <customer.h>
 #include <dispetcher.h>
+#include <master.h>
 
 int main(int argc, char *argv[])
 {
@@ -22,8 +23,15 @@ int main(int argc, char *argv[])
     QObject::connect(dispetcher, SIGNAL(finished()), dispetcherThread, SLOT(terminate()));
     dispetcher->moveToThread(dispetcherThread);
 
+    QThread* masterThread = new QThread();
+    Master* master = new Master ();
+    QObject::connect(masterThread,SIGNAL(started()), master, SLOT(run()));
+    QObject::connect(master, SIGNAL(finished()), masterThread, SLOT(terminate()));
+    master->moveToThread(masterThread);
+
     customerThread->start();
     dispetcherThread->start();
+    masterThread->start();
 
 
     MainWindow w;
