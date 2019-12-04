@@ -2,9 +2,7 @@
 
 Storage::Storage(QObject *parent) : QObject(parent)
 {
-    customerCanal = new QCanal("customerCanal");
-    dispatcherCanalOrder = new QCanal("dispatcherCanalOrder");
-    courierCanal = new QCanal("courierCanal");
+    masterCanal = new QCanal("masterCanal");
     generalCanal = new QCanal("generalCanal");
     storageCanal = new QCanal("storageCanal");
 }
@@ -13,16 +11,24 @@ Storage::Storage(QObject *parent) : QObject(parent)
 void Storage::run()
 {
     while (true) {
-        while (storageCanal->get().getType() != Message::MATERIALS_REQUEST);    //ждем пока не закажут материалы
+        while (storageCanal->getIsEmpty());    //ждем пока не закажут материалы
         QThread::msleep(20);
-        if (count >= NEED){
-            count -= NEED;
-            storageCanal->put(Message::MATERIALS_ARE, QVariant(""));    //передает материалы мастеру
-            toFile("передал материалы. Осталось: " + QString::number(count));
+        //заказали материалы
+        if (storageCanal->get().getType() == Message::MATERIALS_REQUEST){
+            toFile("поступил заказ на материалы");
+            storageCanal->unlockCanal();
+            if (count >= NEED){
+                count -= NEED;
+                masterCanal->put(Message::MATERIALS_ARE, QVariant(""));    //передает материалы мастеру
+                toFile("передал материалы. Осталось: " + QString::number(count));
+            }
+            else{
+                masterCanal->put(Message::MATERIALS_ARE_NOT, QVariant(""));    //передает отказ
+                toFile("материалов недостаточно. Осталось: " + QString::number(count));
+            }
         }
         else{
-            storageCanal->put(Message::MATERIALS_ARE_NOT, QVariant(""));    //передает отказ
-            toFile("материалов недостаточно");
+            toFile("Что-то не то");
         }
     }
 }

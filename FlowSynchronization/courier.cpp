@@ -15,31 +15,31 @@ void Courier::run()
 {
     while (true) {
         //пока в канал мастера не поступит заказ
-        while (masterCanal->get().getType() != Message::MAKE_ORDER) {
-//            toFile("ждет заказ");  //ждет заказ
-//            QThread::msleep(20);
-        }
+        while (courierCanal->getIsEmpty()); //пока ничего не поступило
+        QThread::msleep(20);
 
-        if (masterCanal->get().getType() == Message::MAKE_ORDER){
+        if (courierCanal->get().getType() == Message::ORDER_COMPLETE){
             toFile("получил заказ");
-            storageCanal->put(Message::MATERIALS_REQUEST, QVariant("Стул"));    //запрашивает у склада
-            toFile("запросил материалы");
-            while (storageCanal->get().getType() != Message::MATERIALS_ARE && storageCanal->get().getType() != Message::MATERIALS_ARE_NOT);
-            //материалы поступили
-            if (storageCanal->get().getType() == Message::MATERIALS_ARE){
-                masterCanal->put(Message::ORDER_READY, QVariant("Стул"));    //заказ готов, курьер должен забрать
-                toFile("передал заказ курьеру");
+            courierCanal->unlockCanal();    //опустошаем канал
+            customerCanal->put(Message::ORDER_COMPLETE, QVariant("Стул"));    //сообщает покупателю
+            toFile("передал заказ");
+            while (courierCanal->getIsEmpty()); //пока ничего не поступило
+            QThread::msleep(20);
+            if (courierCanal->get().getType() == Message::MONEY_TRANSFER){
+                toFile("получил деньги");
+                courierCanal->unlockCanal();    //опустошаем канал
+
+                dispatcherCanalOrder->put(Message::MONEY_TRANSFER, QVariant(""));    //передаем деньги диспетчеру
+                toFile("передал деньги");
             }
-            else {
-                masterCanal->put(Message::REJECTION, QVariant("Стул"));    //передает отказ
-                toFile("передал отказ");
+            else{
+                toFile("Что-то не то");
             }
 
-
-            dispatcherCanalOrder->unlockCanal();    //готов принимать новые заказы
+            //dispatcherCanalOrder->unlockCanal();    //готов принимать новые заказы
         }
         else{
-            toFile("Что-то не то: ");
+            toFile("Что-то не то");
         }
 
     }

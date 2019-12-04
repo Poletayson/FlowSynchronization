@@ -21,11 +21,9 @@ public slots:
     void run ();
 
 private:
-    QCanal *customerCanal;      //канал для приема заказчиком
-    QCanal *dispatcherCanalOrder;   //канал для приема диспетчером
-    QCanal *courierCanal;
     QCanal *generalCanal;
     QCanal *storageCanal;
+    QCanal *masterCanal;
 
     int count = 100;
     const int NEED = 10;

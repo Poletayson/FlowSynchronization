@@ -14,37 +14,34 @@ Master::Master(QObject *parent) : QObject(parent)
 
 void Master::run()
 {
-    //toFile(dispatcherCanalOrder->key() + " " + QString(dispatcherCanalOrder->isAttached()));
-
     while (true) {
         //пока в канал мастера не поступит заказ
-        while (masterCanal->get().getType() != Message::MAKE_ORDER) {
-//            toFile("ждет заказ");  //ждет заказ
-//            QThread::msleep(20);
-        }
+        while (masterCanal->getIsEmpty());
+        QThread::msleep(20);
 
         if (masterCanal->get().getType() == Message::MAKE_ORDER){
             toFile("получил заказ");
             storageCanal->put(Message::MATERIALS_REQUEST, QVariant("Стул"));    //запрашивает у склада
             toFile("запросил материалы");
-            while (storageCanal->get().getType() != Message::MATERIALS_ARE && storageCanal->get().getType() != Message::MATERIALS_ARE_NOT);
+            //ждем отказ или материалы
+            while (masterCanal->get().getType() != Message::MATERIALS_ARE && masterCanal->get().getType() != Message::MATERIALS_ARE_NOT);
+            QThread::msleep(20);
             //материалы поступили
-            if (storageCanal->get().getType() == Message::MATERIALS_ARE){
-                masterCanal->put(Message::ORDER_READY, QVariant("Стул"));    //заказ готов, курьер должен забрать
+            if (masterCanal->get().getType() == Message::MATERIALS_ARE){
+
+                courierCanal->put(Message::ORDER_COMPLETE, QVariant("Стул"));    //заказ готов, курьер должен забрать
                 toFile("передал заказ курьеру");
+                masterCanal->unlockCanal();
             }
             else {
-                masterCanal->put(Message::REJECTION, QVariant("Стул"));    //передает отказ
+                dispatcherCanalOrder->put(Message::REJECTION, QVariant("Стул"));    //передает отказ
                 toFile("передал отказ");
+                masterCanal->unlockCanal();
             }
-
-
-            dispatcherCanalOrder->unlockCanal();    //готов принимать новые заказы
         }
         else{
             toFile("Что-то не то: ");
         }
-
     }
 
 }

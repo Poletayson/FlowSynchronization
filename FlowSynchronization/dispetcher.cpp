@@ -15,10 +15,8 @@ void Dispetcher::run()
     //toFile(dispatcherCanalOrder->key() + " " + QString(dispatcherCanalOrder->isAttached()));
 
     while (true) {
-        while (dispatcherCanalOrder->getIsEmpty()){
-            toFile("ждет заказ");   //ждем пока не поступит заказ
+        while (dispatcherCanalOrder->getIsEmpty());
 
-        }
         if (dispatcherCanalOrder->get().getType() == Message::MAKE_ORDER){
             toFile("Получил заказ");
             while (masterCanal->get().getType() != Message::EMPTY);
