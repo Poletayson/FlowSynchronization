@@ -5,6 +5,8 @@
 #include <customer.h>
 #include <dispetcher.h>
 #include <master.h>
+#include <storage.h>
+#include <courier.h>
 
 int main(int argc, char *argv[])
 {
@@ -29,9 +31,23 @@ int main(int argc, char *argv[])
     QObject::connect(master, SIGNAL(finished()), masterThread, SLOT(terminate()));
     master->moveToThread(masterThread);
 
+    QThread* storageThread = new QThread();
+    Storage* storage = new Storage ();
+    QObject::connect(storageThread,SIGNAL(started()), storage, SLOT(run()));
+    QObject::connect(storage, SIGNAL(finished()), storageThread, SLOT(terminate()));
+    storage->moveToThread(storageThread);
+
+    QThread* courierThread = new QThread();
+    Courier* courier = new Courier ();
+    QObject::connect(courierThread,SIGNAL(started()), courier, SLOT(run()));
+    QObject::connect(courier, SIGNAL(finished()), courierThread, SLOT(terminate()));
+    courier->moveToThread(courierThread);
+
     customerThread->start();
     dispetcherThread->start();
     masterThread->start();
+    storageThread->start();
+    courierThread->start();
 
 
     MainWindow w;

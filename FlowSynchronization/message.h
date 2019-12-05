@@ -19,6 +19,7 @@ public:
 
     int getType() const;
     void setType(int value);
+    static const int DELAY = 50;
 
 signals:
 

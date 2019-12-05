@@ -25,7 +25,7 @@ private:
     QCanal *storageCanal;
     QCanal *masterCanal;
 
-    int count = 100;
+    int count = 50;
     const int NEED = 10;
 
 

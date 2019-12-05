@@ -17,7 +17,7 @@ void Master::run()
     while (true) {
         //пока в канал мастера не поступит заказ
         while (masterCanal->getIsEmpty());
-        QThread::msleep(20);
+        QThread::msleep(Message::DELAY);
 
         if (masterCanal->get().getType() == Message::MAKE_ORDER){
             toFile("получил заказ");
@@ -25,7 +25,7 @@ void Master::run()
             toFile("запросил материалы");
             //ждем отказ или материалы
             while (masterCanal->get().getType() != Message::MATERIALS_ARE && masterCanal->get().getType() != Message::MATERIALS_ARE_NOT);
-            QThread::msleep(20);
+            QThread::msleep(Message::DELAY);
             //материалы поступили
             if (masterCanal->get().getType() == Message::MATERIALS_ARE){
 

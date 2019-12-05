@@ -12,7 +12,7 @@ void Storage::run()
 {
     while (true) {
         while (storageCanal->getIsEmpty());    //ждем пока не закажут материалы
-        QThread::msleep(20);
+        QThread::msleep(Message::DELAY);
         //заказали материалы
         if (storageCanal->get().getType() == Message::MATERIALS_REQUEST){
             toFile("поступил заказ на материалы");

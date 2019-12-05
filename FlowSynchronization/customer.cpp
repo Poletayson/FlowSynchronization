@@ -14,13 +14,13 @@ void Customer::run(){
     for (int counter = 0; counter < ORDER_COUNT; counter++) {
         //ждем пока канал непуст
         while (!dispatcherCanalOrder->getIsEmpty());
-        QThread::msleep(20);
+        QThread::msleep(Message::DELAY);
         dispatcherCanalOrder->put(Message::MAKE_ORDER, QVariant("Стул"));   //делаем заказ
-        toFile("заказал стул");
+        toFile("\nзаказал стул");
         customerCanal->unlockCanal();
 
         while (customerCanal->getIsEmpty());
-        QThread::msleep(20);
+        QThread::msleep(Message::DELAY);
         if (customerCanal->get().getType() == Message::REJECTION)
             toFile("получил отказ");
         else if(customerCanal->get().getType() == Message::ORDER_COMPLETE){

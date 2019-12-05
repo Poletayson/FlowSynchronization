@@ -16,7 +16,7 @@ void Courier::run()
     while (true) {
         //пока в канал мастера не поступит заказ
         while (courierCanal->getIsEmpty()); //пока ничего не поступило
-        QThread::msleep(20);
+        QThread::msleep(Message::DELAY);
 
         if (courierCanal->get().getType() == Message::ORDER_COMPLETE){
             toFile("получил заказ");
@@ -24,7 +24,7 @@ void Courier::run()
             customerCanal->put(Message::ORDER_COMPLETE, QVariant("Стул"));    //сообщает покупателю
             toFile("передал заказ");
             while (courierCanal->getIsEmpty()); //пока ничего не поступило
-            QThread::msleep(20);
+            QThread::msleep(Message::DELAY);
             if (courierCanal->get().getType() == Message::MONEY_TRANSFER){
                 toFile("получил деньги");
                 courierCanal->unlockCanal();    //опустошаем канал
@@ -35,8 +35,6 @@ void Courier::run()
             else{
                 toFile("Что-то не то");
             }
-
-            //dispatcherCanalOrder->unlockCanal();    //готов принимать новые заказы
         }
         else{
             toFile("Что-то не то");

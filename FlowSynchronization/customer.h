@@ -26,7 +26,7 @@ private:
     QCanal *courierCanal;
     QCanal *generalCanal;
 
-    int ORDER_COUNT = 3;
+    int ORDER_COUNT = 8;
 
 
 signals:

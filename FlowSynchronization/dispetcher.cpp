@@ -10,35 +10,31 @@ Dispetcher::Dispetcher(QObject *parent) : QObject(parent)
     dispatcherCanalToMaster = new QCanal("dispatcherCanalToMaster");
 }
 
-void Dispetcher::run()
-{
-    //toFile(dispatcherCanalOrder->key() + " " + QString(dispatcherCanalOrder->isAttached()));
-
+void Dispetcher::run(){
     while (true) {
         while (dispatcherCanalOrder->getIsEmpty());
+        QThread::msleep(Message::DELAY);
 
         if (dispatcherCanalOrder->get().getType() == Message::MAKE_ORDER){
             toFile("Получил заказ");
             while (masterCanal->get().getType() != Message::EMPTY);
+            QThread::msleep(Message::DELAY);
+            //dispatcherCanalOrder->unlockCanal();
             masterCanal->put(Message::MAKE_ORDER, QVariant("Стул"));    //передает заказ мастеру
             toFile("Передал заказ мастеру");
-            while (masterCanal->get().getType() != Message::REJECTION && courierCanal->get().getType() != Message::MONEY_TRANSFER){
-                toFile("ждет ответ");
-                QThread::msleep(20);
-            }   //пока не отказ
-            //деньги получены
-            if (courierCanal->get().getType() == Message::MONEY_TRANSFER){
-                toFile("деньги получены");
+
+            while (dispatcherCanalOrder->get().getType() != Message::MONEY_TRANSFER && dispatcherCanalOrder->get().getType() != Message::REJECTION); //ждем ответ
+            QThread::msleep(Message::DELAY);
+
+            if (dispatcherCanalOrder->get().getType() == Message::MONEY_TRANSFER){
+                toFile("Получил деньги");
             }
-            else
-            {
+            else{
+                toFile(QString::number(dispatcherCanalOrder->get().getType()));
                 customerCanal->put(Message::REJECTION, QVariant("Стул"));    //передаем отказ
                 toFile("отказ передан заказчику");
-//                QThread::msleep(15);
             }
-            dispatcherCanalOrder->unlockCanal();    //готов принимать новые заказы
-
-//            customerCanal->put(Message::CANCEL, QVariant("Стул"));    //Все, заказ выполнен
+            dispatcherCanalOrder->unlockCanal();
 
         }
         else{
